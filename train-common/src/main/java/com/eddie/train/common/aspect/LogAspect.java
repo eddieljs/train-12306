@@ -1,4 +1,4 @@
-package com.eddie.train.member.aspect;
+package com.eddie.train.common.aspect;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
