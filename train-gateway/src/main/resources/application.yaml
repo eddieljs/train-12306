@@ -8,3 +8,5 @@ spring:
           predicates:
           - Path=/member/**
           uri: http://127.0.0.1:8081
+  jackson:
+    time-zone: Asia/Shanghai

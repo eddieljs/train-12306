@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.eddie.train.member.domain.Member;
 import com.eddie.train.member.domain.MemberExample;
 import com.eddie.train.member.mapper.MemberMapper;
+import com.eddie.train.member.req.MemberRegisterReq;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,8 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public long register(String mobile){
+    public long register(MemberRegisterReq req){
+        String mobile = req.getMobile();
         //查询mobile是否重复
         MemberExample example = new MemberExample();
         example.createCriteria().andMobileEqualTo(mobile);

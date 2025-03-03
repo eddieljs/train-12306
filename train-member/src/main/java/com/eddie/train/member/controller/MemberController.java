@@ -1,5 +1,7 @@
 package com.eddie.train.member.controller;
 
+import com.eddie.train.common.resp.Result;
+import com.eddie.train.member.req.MemberRegisterReq;
 import com.eddie.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +17,12 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/count")
-    public Integer count() {
-        return memberService.count();
+    public Result<Integer> count() {
+        return Result.success(memberService.count());
     }
 
     @PostMapping("/register")
-    public long register(String mobile) {
-        return memberService.register(mobile);
+    public Result<Long> register(MemberRegisterReq req) {
+        return Result.success(memberService.register(req));
     }
 }
