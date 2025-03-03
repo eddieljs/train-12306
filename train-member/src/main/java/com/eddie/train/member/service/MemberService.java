@@ -12,7 +12,7 @@ public class MemberService {
 
 
     public int count(){
-        return memberMapper.count();
+        return Math.toIntExact(memberMapper.countByExample(null));
     }
 
 }
