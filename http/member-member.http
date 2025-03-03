@@ -1,4 +1,10 @@
 //gtr gtrp 快捷生成
 GET http://localhost:8080/member/member/count
 Accept: application/json
+###
+POST http://localhost:8080/member/member/register
+Content-Type: application/x-www-form-urlencoded
+
+mobile=123
+###
 
