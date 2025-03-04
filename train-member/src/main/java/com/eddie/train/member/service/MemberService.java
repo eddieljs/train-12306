@@ -1,6 +1,8 @@
 package com.eddie.train.member.service;
 
 import cn.hutool.core.collection.CollUtil;
+import com.eddie.train.common.exception.BusinessException;
+import com.eddie.train.common.exception.BusinessExceptionEnum;
 import com.eddie.train.member.domain.Member;
 import com.eddie.train.member.domain.MemberExample;
 import com.eddie.train.member.mapper.MemberMapper;
@@ -29,8 +31,7 @@ public class MemberService {
         List<Member> list = memberMapper.selectByExample(example);
 
         if(!CollUtil.isEmpty(list)){
-            //return list.get(0).getId();
-            throw new RuntimeException("手机号已注册");
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
         Member member = new Member();
         member.setMobile(mobile);
