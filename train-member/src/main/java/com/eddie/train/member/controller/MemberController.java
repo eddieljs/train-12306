@@ -4,6 +4,7 @@ import com.eddie.train.common.resp.Result;
 import com.eddie.train.member.req.MemberRegisterReq;
 import com.eddie.train.member.service.MemberService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public Result<Long> register(MemberRegisterReq req) {
+    public Result<Long> register(@Valid MemberRegisterReq req) {
         return Result.success(memberService.register(req));
     }
 }
