@@ -50,6 +50,7 @@ public class MemberService {
         Member member = selectMemberByMobile(mobile);
         //不存在则插入
         if(member == null){
+            member = new Member();
             member.setMobile(mobile);
             //机器中心、数据中心
             member.setId(SnowUtil.getSnowflakeNextId());

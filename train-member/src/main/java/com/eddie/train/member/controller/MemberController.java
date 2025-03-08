@@ -8,10 +8,7 @@ import com.eddie.train.member.resp.MemberLoginResp;
 import com.eddie.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")
@@ -26,18 +23,18 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public Result<Long> register(@Valid MemberRegisterReq req) {
+    public Result<Long> register(@Valid @RequestBody MemberRegisterReq req) {
         return Result.success(memberService.register(req));
     }
 
     @PostMapping("/sendCode")
-    public Result sendCode(@Valid MemberSendCodeReq req) {
+    public Result sendCode(@Valid @RequestBody MemberSendCodeReq req) {
         memberService.sendCode(req);
         return Result.success("验证码发送成功");
     }
 
     @PostMapping("/login")
-    public Result<MemberLoginResp> login(@Valid MemberLoginReq req) {
+    public Result<MemberLoginResp> login(@Valid @RequestBody MemberLoginReq req) {
         MemberLoginResp resp = memberService.login(req);
         return Result.success(resp);
     }
