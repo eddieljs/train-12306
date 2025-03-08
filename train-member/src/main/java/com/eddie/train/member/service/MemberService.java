@@ -3,6 +3,7 @@ package com.eddie.train.member.service;
 import cn.hutool.core.collection.CollUtil;
 import com.eddie.train.common.exception.BusinessException;
 import com.eddie.train.common.exception.BusinessExceptionEnum;
+import com.eddie.train.common.util.SnowUtil;
 import com.eddie.train.member.domain.Member;
 import com.eddie.train.member.domain.MemberExample;
 import com.eddie.train.member.mapper.MemberMapper;
@@ -35,7 +36,8 @@ public class MemberService {
         }
         Member member = new Member();
         member.setMobile(mobile);
-        member.setId(System.currentTimeMillis());
+        //机器中心、数据中心
+        member.setId(SnowUtil.getSnowflakeNextId());
         memberMapper.insertSelective(member);
         return member.getId();
     }
