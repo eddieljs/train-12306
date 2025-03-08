@@ -1,8 +1,10 @@
 package com.eddie.train.member.controller;
 
 import com.eddie.train.common.resp.Result;
+import com.eddie.train.member.req.MemberLoginReq;
 import com.eddie.train.member.req.MemberRegisterReq;
 import com.eddie.train.member.req.MemberSendCodeReq;
+import com.eddie.train.member.resp.MemberLoginResp;
 import com.eddie.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -32,5 +34,11 @@ public class MemberController {
     public Result sendCode(@Valid MemberSendCodeReq req) {
         memberService.sendCode(req);
         return Result.success("验证码发送成功");
+    }
+
+    @PostMapping("/login")
+    public Result<MemberLoginResp> login(@Valid MemberLoginReq req) {
+        MemberLoginResp resp = memberService.login(req);
+        return Result.success(resp);
     }
 }
