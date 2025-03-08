@@ -2,6 +2,7 @@ package com.eddie.train.common.controller;
 
 import com.eddie.train.common.exception.BusinessException;
 import com.eddie.train.common.resp.Result;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -81,6 +82,15 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = RuntimeException.class)
     public Result exceptionHandler(RuntimeException e) {
+        throw e;
+    }
+    /**
+     * 校验异常统一处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = CommunicationsException.class)
+    public Result exceptionHandler(CommunicationsException e) throws CommunicationsException {
         throw e;
     }
 
