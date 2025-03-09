@@ -86,14 +86,13 @@ export default defineComponent({
     const login = () => {
       axios.post("/member/member/login", loginForm).then((response) => {
         let data = response.data;
-        console.log(response);
         if (data.code == 200) {
           notification.success({ description: '登录成功！' });
           // 登录成功，跳到控台主页
           router.push("/");
-          store.commit("setMember", data.content);
+          store.commit("setMember", data.data);
         } else {
-          notification.error({ description: data.message });
+          notification.error({ description: data.msg });
         }
       })
     };
