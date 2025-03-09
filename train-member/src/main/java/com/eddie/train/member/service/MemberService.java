@@ -2,6 +2,7 @@ package com.eddie.train.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.eddie.train.common.exception.BusinessException;
 import com.eddie.train.common.exception.BusinessExceptionEnum;
 import com.eddie.train.common.util.SnowUtil;
@@ -87,12 +88,15 @@ public class MemberService {
         if (member == null) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
         }
-
+        //验证短信验证码
         if(!"8888".equals(code)){
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
         }
-
-        return BeanUtil.copyProperties(member, MemberLoginResp.class);
+        //生成JWT
+        MemberLoginResp memberLoginResp = BeanUtil.copyProperties(member, MemberLoginResp.class);
+        String token = JWTUtil.createToken(BeanUtil.beanToMap(memberLoginResp), "Eddie12306".getBytes());
+        memberLoginResp.setToken(token);
+        return memberLoginResp;
     }
 
     private Member selectMemberByMobile(String mobile) {
