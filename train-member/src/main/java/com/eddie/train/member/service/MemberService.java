@@ -2,9 +2,9 @@ package com.eddie.train.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.jwt.JWTUtil;
 import com.eddie.train.common.exception.BusinessException;
 import com.eddie.train.common.exception.BusinessExceptionEnum;
+import com.eddie.train.common.util.JwtUtil;
 import com.eddie.train.common.util.SnowUtil;
 import com.eddie.train.member.domain.Member;
 import com.eddie.train.member.domain.MemberExample;
@@ -94,7 +94,7 @@ public class MemberService {
         }
         //生成JWT
         MemberLoginResp memberLoginResp = BeanUtil.copyProperties(member, MemberLoginResp.class);
-        String token = JWTUtil.createToken(BeanUtil.beanToMap(memberLoginResp), "Eddie12306".getBytes());
+        String token = JwtUtil.createToken(memberLoginResp);
         memberLoginResp.setToken(token);
         return memberLoginResp;
     }
