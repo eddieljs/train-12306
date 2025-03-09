@@ -1,5 +1,6 @@
 package com.eddie.train.common.controller;
 
+import cn.hutool.jwt.JWTException;
 import com.eddie.train.common.exception.BusinessException;
 import com.eddie.train.common.resp.Result;
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
@@ -92,6 +93,18 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = CommunicationsException.class)
     public Result exceptionHandler(CommunicationsException e) throws CommunicationsException {
         throw e;
+    }
+
+    /**
+     * JWT异常统一处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = JWTException.class)
+    @ResponseBody
+    public Result exceptionHandler(JWTException e) {
+        LOG.error("JWT异常：", e);
+        return Result.error("JWT令牌格式错误，请检查令牌");
     }
 
 }
