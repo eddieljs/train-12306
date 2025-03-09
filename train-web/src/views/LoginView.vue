@@ -72,10 +72,10 @@ export default defineComponent({
       axios.post("http://localhost:8080/member/member/sendCode", {
         mobile: loginForm.mobile
       }).then(response => {
-        console.log(response);
+        console.log(response.data);
         let data = response.data;
-        if (data.success) {
-          notification.success({ description: '发送验证码成功！' });
+        if (data.code == 200) {
+          notification.success({ description: "发送验证码成功！"});
           loginForm.code = "8888";//后续使用redis解决
         } else {
           notification.error({ description: data.message });
@@ -84,10 +84,10 @@ export default defineComponent({
     };
 
     const login = () => {
-      axios.post("/member/login", loginForm).then((response) => {
+      axios.post("http://localhost:8080/member/member/login", loginForm).then((response) => {
         let data = response.data;
         console.log(response);
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({ description: '登录成功！' });
           // 登录成功，跳到控台主页
           router.push("/welcome");
