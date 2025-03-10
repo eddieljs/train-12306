@@ -14,7 +14,6 @@ import java.util.Date;
 public class PassengerSavaReq {
     private Long id;
 
-    @NotNull(message = "【会员ID】不能为空")
     private Long memberId;
 
     @NotNull(message = "【名字】不能为空")
