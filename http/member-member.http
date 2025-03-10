@@ -41,3 +41,8 @@ token: {{token}}
   "type": "1"
 }
 
+###
+GET http://localhost:8080/member/passenger/query-list
+Accept: application/json
+token: {{token}}
+
