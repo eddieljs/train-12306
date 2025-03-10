@@ -1,4 +1,4 @@
-<template xmlns:color="http://www.w3.org/1999/xhtml">
+<template>
   <a-layout-header class="header">
     <div class="logo" />
     <div style="float: right; color:white;">
@@ -12,6 +12,7 @@
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
+        @click="handleMenuClick"
     >
       <a-menu-item key="/welcome">
         <router-link to="/welcome">
@@ -42,31 +43,40 @@
   </a-layout-header>
 </template>
 
-<script socpe>
-import {defineComponent, ref,watch} from "vue";
+<script>
+import { defineComponent, ref, watch } from "vue";
 import store from "@/store";
 import router from "@/router";
-import {UserOutlined} from "@ant-design/icons-vue";
+import { UserOutlined } from "@ant-design/icons-vue";
 
-export  default  defineComponent({
-  name:"the-header-view",
-  components: {UserOutlined},
-  setup(){
+export default defineComponent({
+  name: "TheHeaderView",
+  components: { UserOutlined },
+  setup() {
     let member = store.state.member;
-    const selectedKeys=ref([]);
-    watch(()=>
-      router.currentRoute.value.path,(newValue)=>{
-      console.log('watch',newValue);
-      selectedKeys.value=[];
-      selectedKeys.value.push(newValue);
-    },{immediate:true});
-    return{
-      selectedKeys,
-      member
-    }
+    const selectedKeys = ref([]);
 
-  }
-})
+    // 监听路由变化，更新 selectedKeys
+    watch(
+        () => router.currentRoute.value.path,
+        (newValue) => {
+          selectedKeys.value = [newValue];
+        },
+        {immediate: true}
+    );
+
+    // 处理菜单点击事件
+    const handleMenuClick = ({key}) => {
+      router.push(key);
+    };
+
+    return {
+      selectedKeys,
+      member,
+      handleMenuClick,
+    };
+  },
+});
 </script>
 
 <style scoped>

@@ -1,15 +1,10 @@
-<script setup>
-
-import {LaptopOutlined, NotificationOutlined, UserOutlined} from "@ant-design/icons-vue";
-</script>
-
 <template>
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        v-model:openKeys="openKeys"
         mode="inline"
         style="height: 100%"
+        @click="handleMenuClick"
     >
       <a-menu-item key="/welcome">
         <router-link to="/welcome">
@@ -40,25 +35,36 @@ import {LaptopOutlined, NotificationOutlined, UserOutlined} from "@ant-design/ic
   </a-layout-sider>
 </template>
 
-<script socpe>
-import {defineComponent, ref,watch} from "vue";
+<script>
+import { defineComponent, ref, watch } from "vue";
 import router from "@/router";
+import store from "@/store";
 
-export  default  defineComponent({
-  name:"the-sider-view",
-  setup(){
+export default defineComponent({
+  name: "TheSiderView",
+  setup() {
     const selectedKeys = ref([]);
+    let member = store.state.member;
 
-    watch(() => router.currentRoute.value.path, (newValue) => {
-      console.log('watch', newValue);
-      selectedKeys.value = [];
-      selectedKeys.value.push(newValue);
-    }, {immediate: true});
-    return{
+    // 监听路由变化，更新 selectedKeys
+    watch(
+        () => router.currentRoute.value.path,
+        (newValue) => {
+          selectedKeys.value = [newValue];
+        },
+        { immediate: true }
+    );
+
+    // 处理菜单点击事件
+    const handleMenuClick = ({ key }) => {
+      router.push(key);
+    };
+
+    return {
       selectedKeys,
-      openKeys: ref(['sub1']),
-    }
-
-  }
-})
+      member,
+      handleMenuClick,
+    };
+  },
+});
 </script>
