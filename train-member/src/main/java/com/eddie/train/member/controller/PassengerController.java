@@ -2,8 +2,10 @@ package com.eddie.train.member.controller;
 
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.resp.Result;
+import com.eddie.train.member.req.MemberLoginReq;
 import com.eddie.train.member.req.PassengerQueryReq;
 import com.eddie.train.member.req.PassengerSavaReq;
+import com.eddie.train.member.resp.MemberLoginResp;
 import com.eddie.train.member.resp.PassengerQueryResp;
 import com.eddie.train.member.service.PassengerService;
 import jakarta.annotation.Resource;
@@ -28,5 +30,11 @@ public class PassengerController {
         //req.setMemberId(LoginMemberContext.getId());
         PageResp<PassengerQueryResp> passengerList = passengerService.queryList(req);
         return Result.success(passengerList);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Result login(@Valid @PathVariable Long id) {
+        passengerService.deleteById(id);
+        return Result.success("乘客信息删除成功!");
     }
 }
