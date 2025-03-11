@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.eddie.train.common.context.LoginMemberContext;
+import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.util.SnowUtil;
 import com.eddie.train.member.domain.Passenger;
 import com.eddie.train.member.domain.PassengerExample;
@@ -11,6 +12,8 @@ import com.eddie.train.member.mapper.PassengerMapper;
 import com.eddie.train.member.req.PassengerQueryReq;
 import com.eddie.train.member.req.PassengerSavaReq;
 import com.eddie.train.member.resp.PassengerQueryResp;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,13 +38,26 @@ public class PassengerService {
         passengerMapper.insert(passenger);
     }
 
-    public List<PassengerQueryResp> queryList(PassengerQueryReq req){
+    public PageResp<PassengerQueryResp> queryList(PassengerQueryReq req){
+        //设置查询条件
         PassengerExample passengerExample = new PassengerExample();
         PassengerExample.Criteria criteria = passengerExample.createCriteria();
-        if (ObjectUtil.isNotNull(LoginMemberContext.getId())){
+        if (ObjectUtil.isNotNull(req.getMemberId())){
             criteria.andMemberIdEqualTo(LoginMemberContext.getId());
         }
+        //设置分页参数
+        PageHelper.startPage(req.getPage(), req.getSize());
+        //进行条件查询
         List<Passenger> passengerList = passengerMapper.selectByExample(passengerExample);
-        return BeanUtil.copyToList(passengerList, PassengerQueryResp.class);
+        //将查询结果封装为pageInfo
+        PageInfo<Passenger> pageInfo = new PageInfo<>(passengerList);
+        log.info("总条数,{}",pageInfo.getTotal());
+        log.info("总页数,{}",pageInfo.getPages());
+        //类型转换
+        List<PassengerQueryResp> list = BeanUtil.copyToList(passengerList, PassengerQueryResp.class);
+        PageResp<PassengerQueryResp> pageResp = new PageResp<>();
+        pageResp.setList(list);
+        pageResp.setTotal(pageInfo.getTotal());
+        return pageResp;
     }
 }

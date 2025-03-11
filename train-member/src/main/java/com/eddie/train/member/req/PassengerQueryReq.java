@@ -1,6 +1,8 @@
 package com.eddie.train.member.req;
 
-public class PassengerQueryReq {
+import com.eddie.train.common.req.PageReq;
+
+public class PassengerQueryReq extends PageReq {
 
 
     private Long memberId;
