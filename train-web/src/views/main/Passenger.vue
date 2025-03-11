@@ -128,7 +128,7 @@ export default defineComponent({
     const handleOk = () => {
       axios.post("/member/passenger/save", passenger.value).then((response) => {
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "保存成功！"});
           visible.value = false;
           handleQuery({
