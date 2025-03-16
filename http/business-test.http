@@ -1,0 +1,8 @@
+//gtr gtrp 快捷生成
+GET http://localhost:8082/business/hello
+Accept: application/json
+###
+
+GET http://localhost:8080/business/hello
+Accept: application/json
+

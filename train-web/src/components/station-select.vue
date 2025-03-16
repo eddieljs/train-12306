@@ -37,7 +37,7 @@ export default defineComponent({
      * 查询所有的车站，用于车站下拉框
      */
     const queryAllStation = () => {
-      axios.get("/business/station/query-all").then((response) => {
+      axios.get("/business/admin/station/query-all").then((response) => {
         let data = response.data;
         if (data.success) {
           stations.value = data.content;
