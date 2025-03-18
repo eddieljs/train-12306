@@ -1,4 +1,4 @@
-package com.eddie.train.${module}.req;
+package com.eddie.train.${module2}.req;
 
 <#list typeSet as type>
 <#if type=='Date'>

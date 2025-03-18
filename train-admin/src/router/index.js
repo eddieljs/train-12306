@@ -21,7 +21,7 @@ const routes = [
     },
       {
         path: 'passenger',
-        component:()=>import('../views/main/Passenger.vue')
+        component:()=>import('../views/main/passenger.vue')
       },
       {
         path: 'order',

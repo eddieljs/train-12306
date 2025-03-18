@@ -22,12 +22,11 @@ public class PassengerController {
     @PostMapping("/save")
     public Result<Object> save(@Valid @RequestBody PassengerSavaReq req) {
         passengerService.save(req);
-        return Result.success("新增乘客成功！");
+        return Result.success("新增成功！");
     }
 
     @GetMapping("/query-list")
     public Result<PageResp<PassengerQueryResp>> queryList(@Valid PassengerQueryReq req) {
-        //req.setMemberId(LoginMemberContext.getId());
         PageResp<PassengerQueryResp> passengerList = passengerService.queryList(req);
         return Result.success(passengerList);
     }
@@ -35,6 +34,6 @@ public class PassengerController {
     @DeleteMapping("/delete/{id}")
     public Result login(@Valid @PathVariable Long id) {
         passengerService.deleteById(id);
-        return Result.success("乘客信息删除成功!");
+        return Result.success("信息删除成功!");
     }
 }

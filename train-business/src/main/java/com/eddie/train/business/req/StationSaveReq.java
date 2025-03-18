@@ -1,38 +1,35 @@
-package com.eddie.train.member.resp;
+package com.eddie.train.business.req;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class PassengerQueryResp {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class StationSaveReq {
 
     /**
      * id
      */
-    @JsonSerialize(using= ToStringSerializer.class)
     private Long id;
 
     /**
-     * 会员id
+     * 站名
      */
-    @JsonSerialize(using= ToStringSerializer.class)
-    private Long memberId;
-
-    /**
-     * 姓名
-     */
+    @NotBlank(message = "【站名】不能为空")
     private String name;
 
     /**
-     * 身份证
+     * 站名拼音
      */
-    private String idCard;
+    @NotBlank(message = "【站名拼音】不能为空")
+    private String namePinyin;
 
     /**
-     * 旅客类型|枚举[PassengerTypeEnum]
+     * 站名拼音首字母
      */
-    private String type;
+    @NotBlank(message = "【站名拼音首字母】不能为空")
+    private String namePy;
 
     /**
      * 新增时间
@@ -54,14 +51,6 @@ public class PassengerQueryResp {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
     public String getName() {
         return name;
     }
@@ -70,20 +59,20 @@ public class PassengerQueryResp {
         this.name = name;
     }
 
-    public String getIdCard() {
-        return idCard;
+    public String getNamePinyin() {
+        return namePinyin;
     }
 
-    public void setIdCard(String idCard) {
-        this.idCard = idCard;
+    public void setNamePinyin(String namePinyin) {
+        this.namePinyin = namePinyin;
     }
 
-    public String getType() {
-        return type;
+    public String getNamePy() {
+        return namePy;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setNamePy(String namePy) {
+        this.namePy = namePy;
     }
 
     public Date getCreateTime() {
@@ -109,10 +98,9 @@ public class PassengerQueryResp {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", memberId=").append(memberId);
         sb.append(", name=").append(name);
-        sb.append(", idCard=").append(idCard);
-        sb.append(", type=").append(type);
+        sb.append(", namePinyin=").append(namePinyin);
+        sb.append(", namePy=").append(namePy);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");

@@ -1,4 +1,4 @@
-package com.eddie.train.${module}.resp;
+package com.eddie.train.${module2}.resp;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

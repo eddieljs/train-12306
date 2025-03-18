@@ -26,7 +26,7 @@
     </h3>
     <div>
       如果您还没有乘车人，可以先去
-      <router-link to="/passenger">
+      <router-link to="/train-admin/src/views/main/passenger">
         添加乘车人
       </router-link>
     </div>

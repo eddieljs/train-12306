@@ -34,6 +34,9 @@
   <a-modal v-model:visible="visible" title="乘车人" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="passenger" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
+      <a-form-item label="会员id">
+        <a-input v-model:value="passenger.memberId" />
+      </a-form-item>
       <a-form-item label="姓名">
         <a-input v-model:value="passenger.name" />
       </a-form-item>
@@ -75,29 +78,34 @@ export default defineComponent({
     const pagination = ref({
       total: 0,
       current: 1,
-      pageSize: 5,
+      pageSize: 10,
     });
     let loading = ref(false);
     const columns = [
-      {
-        title: '姓名',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: '身份证',
-        dataIndex: 'idCard',
-        key: 'idCard',
-      },
-      {
-        title: '旅客类型',
-        dataIndex: 'type',
-        key: 'type',
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation'
-      }
+    {
+      title: '会员id',
+      dataIndex: 'memberId',
+      key: 'memberId',
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '身份证',
+      dataIndex: 'idCard',
+      key: 'idCard',
+    },
+    {
+      title: '旅客类型',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation'
+    }
     ];
 
     const onAdd = () => {
@@ -111,9 +119,9 @@ export default defineComponent({
     };
 
     const onDelete = (record) => {
-      axios.delete("/member/passenger/delete/" + record.id).then((response) => {
+      axios.delete("/member/admin/passenger/delete/" + record.id).then((response) => {
         const data = response.data;
-        if (data.code == 200) {
+        if (data.success) {
           notification.success({description: "删除成功！"});
           handleQuery({
             page: pagination.value.current,
@@ -126,9 +134,9 @@ export default defineComponent({
     };
 
     const handleOk = () => {
-      axios.post("/member/passenger/save", passenger.value).then((response) => {
+      axios.post("/member/admin/passenger/save", passenger.value).then((response) => {
         let data = response.data;
-        if (data.code == 200) {
+        if (data.success) {
           notification.success({description: "保存成功！"});
           visible.value = false;
           handleQuery({
@@ -149,7 +157,7 @@ export default defineComponent({
         };
       }
       loading.value = true;
-      axios.get("/member/passenger/query-list", {
+      axios.get("/member/admin/passenger/query-list", {
         params: {
           page: param.page,
           size: param.size
@@ -158,21 +166,22 @@ export default defineComponent({
         loading.value = false;
         let data = response.data;
         if (data.code == 200) {
-          passengers.value = data.data.list;
+          passengers.value = data.content.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.data.total;
+          pagination.value.total = data.content.total;
         } else {
-          notification.error({description: data.msg});
+          notification.error({description: data.message});
         }
       });
     };
 
-    const handleTableChange = (pagination) => {
-      // console.log("看看自带的分页参数都有啥：" + pagination);
+    const handleTableChange = (page) => {
+      // console.log("看看自带的分页参数都有啥：" + JSON.stringify(page));
+      pagination.value.pageSize = page.pageSize;
       handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
+        page: page.current,
+        size: page.pageSize
       });
     };
 

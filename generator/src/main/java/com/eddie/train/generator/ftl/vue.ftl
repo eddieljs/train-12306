@@ -126,7 +126,7 @@ export default defineComponent({
     };
 
     const onDelete = (record) => {
-      axios.delete("/${module}/admin/${do_main}/delete/" + record.id).then((response) => {
+      axios.delete("/${module2}/admin/${do_main}/delete/" + record.id).then((response) => {
         const data = response.data;
         if (data.success) {
           notification.success({description: "删除成功！"});
@@ -141,7 +141,7 @@ export default defineComponent({
     };
 
     const handleOk = () => {
-      axios.post("/${module}/admin/${do_main}/save", ${domain}.value).then((response) => {
+      axios.post("/${module2}/admin/${do_main}/save", ${domain}.value).then((response) => {
         let data = response.data;
         if (data.success) {
           notification.success({description: "保存成功！"});
@@ -165,7 +165,7 @@ export default defineComponent({
         };
       }
       loading.value = true;
-      axios.get("/${module}/admin/${do_main}/query-list", {
+      axios.get("/${module2}/admin/${do_main}/query-list", {
         params: {
           page: param.page,
           size: param.size
@@ -173,7 +173,7 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           ${domain}s.value = data.content.list;
           // 设置分页控件的值
           pagination.value.current = param.page;

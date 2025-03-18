@@ -1,12 +1,13 @@
-package com.eddie.train.${module2}.req;
+package com.eddie.train.business.req;
+
 
 import com.eddie.train.common.req.PageReq;
 
-public class ${Domain}QueryReq extends PageReq {
+public class StationQueryReq extends PageReq {
 
     @Override
     public String toString() {
-        return "${Domain}QueryReq{" +
+        return "StationQueryReq{" +
                 "} " + super.toString();
     }
 }
