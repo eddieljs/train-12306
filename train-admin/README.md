@@ -1,4 +1,4 @@
-# trainadmin
+# admin
 
 ## Project setup
 ```

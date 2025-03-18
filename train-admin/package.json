@@ -1,10 +1,10 @@
 {
-  "name": "trainadmin",
+  "name": "admin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve-dev": "vue-cli-service serve --mode dev --port 8001",
-    "serve-prod": "vue-cli-service serve --mode prod --port 8001",
+    "serve-dev": "vue-cli-service serve --mode dev --port 9001",
+    "serve-prod": "vue-cli-service serve --mode prod --port 9001",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -13,6 +13,8 @@
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.12",
+    "pinyin-pro": "^3.23.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
@@ -43,8 +45,7 @@
     "rules": {
       "vue/multi-word-component-names": 0,
       "no-unused-vars": 0,
-      "no-undef": 0,
-      "vue/no-unused-components": 0
+      "no-undef": 0
     }
   },
   "browserslist": [

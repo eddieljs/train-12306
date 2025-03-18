@@ -1,6 +1,5 @@
 package com.eddie.train.business.req;
 
-
 import com.eddie.train.common.req.PageReq;
 
 public class StationQueryReq extends PageReq {

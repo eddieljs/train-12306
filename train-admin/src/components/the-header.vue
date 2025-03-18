@@ -1,10 +1,8 @@
-<template>
+<template xmlns:color="http://www.w3.org/1999/xhtml">
   <a-layout-header class="header">
-    <div class="logo" />
-    <div style="float: right; color:white;">
-      您好：{{member.mobile}}&nbsp;&nbsp;
-      <router-link to="/login" style="color: white;">
-        退出登录
+    <div class="logo">
+      <router-link to="/welcome" style="color: white; font-size: 18px">
+        12306控台
       </router-link>
     </div>
     <a-menu
@@ -12,71 +10,43 @@
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
-        @click="handleMenuClick"
     >
       <a-menu-item key="/welcome">
         <router-link to="/welcome">
           <coffee-outlined /> &nbsp; 欢迎
         </router-link>
       </a-menu-item>
-      <a-menu-item key="/passenger">
-        <router-link to="/passenger">
-          <user-outlined /> &nbsp; 乘车人管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/ticket">
-        <router-link to="/ticket">
-          <user-outlined /> &nbsp; 车票信息
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/my-ticket">
-        <router-link to="/my-ticket">
-          <user-outlined /> &nbsp; 我的车票
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/seat">
-        <router-link to="/seat">
-          <user-outlined /> &nbsp; 座位销售图
+      <a-menu-item key="/about">
+        <router-link to="/about">
+          <user-outlined /> &nbsp; 关于
         </router-link>
       </a-menu-item>
     </a-menu>
   </a-layout-header>
 </template>
 
-<script>
-import { defineComponent, ref, watch } from "vue";
-import store from "@/store";
+<script socpe>
+import {defineComponent, ref,watch} from "vue";
+
 import router from "@/router";
-import { UserOutlined } from "@ant-design/icons-vue";
 
-export default defineComponent({
-  name: "TheHeaderView",
-  components: { UserOutlined },
-  setup() {
-    let member = store.state.member;
-    const selectedKeys = ref([]);
+export  default  defineComponent({
+  name:"the-header-view",
+  setup(){
 
-    // 监听路由变化，更新 selectedKeys
-    watch(
-        () => router.currentRoute.value.path,
-        (newValue) => {
-          selectedKeys.value = [newValue];
-        },
-        {immediate: true}
-    );
-
-    // 处理菜单点击事件
-    const handleMenuClick = ({key}) => {
-      router.push(key);
-    };
-
-    return {
+    const selectedKeys=ref([]);
+    watch(()=>
+      router.currentRoute.value.path,(newValue)=>{
+      console.log('watch',newValue);
+      selectedKeys.value=[];
+      selectedKeys.value.push(newValue);
+    },{immediate:true});
+    return{
       selectedKeys,
-      member,
-      handleMenuClick,
-    };
-  },
-});
+    }
+
+  }
+})
 </script>
 
 <style scoped>
