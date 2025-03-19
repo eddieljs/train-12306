@@ -21,7 +21,7 @@ public class ${Domain}AdminController {
     @PostMapping("/save")
     public Result<Object> save(@Valid @RequestBody ${Domain}SaveReq req) {
         ${domain}Service.save(req);
-        return new Result.success("新增成功！");
+        return Result.success("新增成功！");
     }
 
     @GetMapping("/query-list")

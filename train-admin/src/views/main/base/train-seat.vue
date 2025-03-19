@@ -117,7 +117,7 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           trainSeats.value = data.content.list;
           // 设置分页控件的值
           pagination.value.current = param.page;

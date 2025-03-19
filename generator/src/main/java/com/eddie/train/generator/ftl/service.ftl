@@ -10,7 +10,7 @@ import com.eddie.train.${module2}.domain.${Domain};
 import com.eddie.train.${module2}.domain.${Domain}Example;
 import com.eddie.train.${module2}.mapper.${Domain}Mapper;
 import com.eddie.train.${module2}.req.${Domain}QueryReq;
-import com.eddie.train.${module2}.req.${Domain}SavaReq;
+import com.eddie.train.${module2}.req.${Domain}SaveReq;
 import com.eddie.train.${module2}.resp.${Domain}QueryResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,11 +28,10 @@ public class ${Domain}Service {
     private ${Domain}Mapper ${domain}Mapper;
 
 
-    public void save(${Domain}SavaReq req) {
+    public void save(${Domain}SaveReq req) {
         DateTime now = DateTime.now();
         ${Domain} ${domain} = BeanUtil.copyProperties(req, ${Domain}.class);
         if (ObjectUtil.isNull(req.getId())) {
-            ${domain}.setMemberId(LoginMemberContext.getId());
             ${domain}.setId(SnowUtil.getSnowflakeNextId());
             ${domain}.setCreateTime(now);
             ${domain}.setUpdateTime(now);
@@ -46,10 +45,9 @@ public class ${Domain}Service {
     public PageResp<${Domain}QueryResp> queryList(${Domain}QueryReq req){
         //设置查询条件
         ${Domain}Example ${domain}Example = new ${Domain}Example();
+        ${domain}Example.setOrderByClause("id desc");
         ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
-        if (ObjectUtil.isNotNull(req.getMemberId())){
-            criteria.andMemberIdEqualTo(LoginMemberContext.getId());
-        }
+
         //设置分页参数
         PageHelper.startPage(req.getPage(), req.getSize());
         //进行条件查询
@@ -66,7 +64,16 @@ public class ${Domain}Service {
         return pageResp;
     }
 
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         ${domain}Mapper.deleteByPrimaryKey(id);
+    }
+
+    public List<${Domain}QueryResp> queryMine() {
+        ${Domain}Example ${domain}Example = new ${Domain}Example();
+        ${domain}Example.setOrderByClause("name asc");
+        ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
+
+        List<${Domain}> list = ${domain}Mapper.selectByExample(${domain}Example);
+        return BeanUtil.copyToList(list, ${Domain}QueryResp.class);
     }
 }
