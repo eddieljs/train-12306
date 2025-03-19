@@ -2,11 +2,6 @@ package com.eddie.train.generator.gen;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.eddie.train.business.enums.ConfirmOrderStatusEnum;
-import com.eddie.train.business.enums.SeatColEnum;
-import com.eddie.train.business.enums.SeatTypeEnum;
-import com.eddie.train.business.enums.TrainTypeEnum;
-import com.eddie.train.member.enums.PassengerTypeEnum;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -26,11 +21,11 @@ public class EnumGenerator {
         StringBuffer bufferArray = new StringBuffer();
         long begin = System.currentTimeMillis();
         try {
-            toJson(PassengerTypeEnum.class, bufferObject, bufferArray);
-            toJson(TrainTypeEnum.class, bufferObject, bufferArray);
-            toJson(SeatTypeEnum.class, bufferObject, bufferArray);
-            toJson(SeatColEnum.class, bufferObject, bufferArray);
-            toJson(ConfirmOrderStatusEnum.class, bufferObject, bufferArray);
+//            toJson(PassengerTypeEnum.class, bufferObject, bufferArray);
+//            toJson(TrainTypeEnum.class, bufferObject, bufferArray);
+//            toJson(SeatTypeEnum.class, bufferObject, bufferArray);
+//            toJson(SeatColEnum.class, bufferObject, bufferArray);
+//            toJson(ConfirmOrderStatusEnum.class, bufferObject, bufferArray);
 
             StringBuffer buffer = bufferObject.append("\r\n").append(bufferArray);
             writeJs(buffer);

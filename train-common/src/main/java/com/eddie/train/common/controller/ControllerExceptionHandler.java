@@ -7,7 +7,9 @@ import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -79,7 +81,7 @@ public class ControllerExceptionHandler {
     /**
      * 校验异常统一处理
      * @param e
-     * @return
+     * @returnMethodArgumentNotValid
      */
     @ExceptionHandler(value = RuntimeException.class)
     public Result exceptionHandler(RuntimeException e) {
@@ -105,6 +107,18 @@ public class ControllerExceptionHandler {
     public Result exceptionHandler(JWTException e) {
         LOG.error("JWT异常：", e);
         return Result.error("JWT令牌格式错误，请检查令牌");
+    }
+
+    /**
+     * 参数检验异常
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Result> handleValidationException(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        LOG.error("参数校验失败：{}", errorMessage);
+        return ResponseEntity.badRequest().body(Result.error(errorMessage));
     }
 
 }

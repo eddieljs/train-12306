@@ -1,11 +1,11 @@
-package com.eddie.train.${module}.controller.admin;
+package com.eddie.train.${module2}.controller.admin;
 
 import com.eddie.train.common.context.LoginMemberContext;
-import com.eddie.train.common.resp.CommonResp;
+import com.eddie.train.common.resp.Result;
 import com.eddie.train.common.resp.PageResp;
-import com.eddie.train.${module}.req.*;
-import com.eddie.train.${module}.resp.${Domain}QueryResp;
-import com.eddie.train.${module}.service.${Domain}Service;
+import com.eddie.train.${module2}.req.*;
+import com.eddie.train.${module2}.resp.${Domain}QueryResp;
+import com.eddie.train.${module2}.service.${Domain}Service;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -19,34 +19,34 @@ public class ${Domain}AdminController {
     private ${Domain}Service ${domain}Service;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody ${Domain}SaveReq req) {
+    public Result<Object> save(@Valid @RequestBody ${Domain}SaveReq req) {
         ${domain}Service.save(req);
-        return new CommonResp<>();
+        return new Result.success();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<${Domain}QueryResp>> queryList(@Valid ${Domain}QueryReq req) {
+    public Result<PageResp<${Domain}QueryResp>> queryList(@Valid ${Domain}QueryReq req) {
 
         PageResp<${Domain}QueryResp> list = ${domain}Service.queryList(req);
-        return new CommonResp<>(list);
+        return new Result.success(list);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public Result<Object> delete(@PathVariable Long id) {
         ${domain}Service.delete(id);
-        return new CommonResp<>();
+        return new Result.success();
     }
 
     @GetMapping("/query-mine")
-    public CommonResp<List<${Domain}QueryResp>> queryMine() {
+    public Result<List<${Domain}QueryResp>> queryMine() {
         List<${Domain}QueryResp> list = ${domain}Service.queryMine();
-        return new CommonResp<>(list);
+        return new Result.success(list);
     }
 
     @GetMapping("/init")
-    public CommonResp<Object> init() {
+    public Result<Object> init() {
         ${domain}Service.init();
-        return new CommonResp<>();
+        return new Result.success();
     }
 
 

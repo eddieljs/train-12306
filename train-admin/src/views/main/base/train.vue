@@ -188,32 +188,70 @@ export default defineComponent({
     const onDelete = (record) => {
       axios.delete("/business/admin/train/delete/" + record.id).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "删除成功！"});
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize,
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
 
+    // const handleOk = () => {
+    //   axios.post("/business/admin/train/save", train.value).then((response) => {
+    //     let data = response.data;
+    //     if (data.code == 200) {
+    //       console.log(data.msg);
+    //       notification.success({description: "保存成功！"});
+    //       visible.value = false;
+    //       handleQuery({
+    //         page: pagination.value.current,
+    //         size: pagination.value.pageSize
+    //       });
+    //     } else {
+    //       console.log(data.msg);
+    //       notification.error({description: data.msg});
+    //     }
+    //   });
+    // };
+
     const handleOk = () => {
-      axios.post("/business/admin/train/save", train.value).then((response) => {
-        let data = response.data;
-        if (data.success) {
-          notification.success({description: "保存成功！"});
-          visible.value = false;
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
+      axios.post("/business/admin/train/save", train.value)
+          .then((response) => {
+            const data = response.data;
+            console.log("完整响应数据:", data);
+            if (data.code === 200) {
+              notification.success({ description: "保存成功！" });
+              visible.value = false;
+              handleQuery({
+                page: pagination.value.current,
+                size: pagination.value.pageSize
+              });
+            } else {
+              console.error("业务错误:", data.msg);
+              notification.error({ description: data.msg || "未知业务错误" });
+            }
+          })
+          .catch((error) => {
+            if (error.response) {
+              const serverError = error.response.data;
+              console.error("HTTP错误:", serverError.msg);
+              notification.error({
+                description: serverError.msg || `请求失败（${error.response.status}）`
+              });
+            } else if (error.request) {
+              // 请求已发出但无响应（网络断开等）
+              console.error("无响应:", error.message);
+              notification.error({ description: "网络异常，请检查连接" });
+            } else {
+              // 其他错误（例如代码问题）
+              console.error("其他错误:", error.message);
+              notification.error({ description: "未知错误" });
+            }
           });
-        } else {
-          notification.error({description: data.message});
-        }
-      });
     };
 
     const handleQuery = (param) => {
@@ -232,13 +270,13 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
-          trains.value = data.content.list;
+        if (data.code == 200) {
+          trains.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.data.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -264,10 +302,10 @@ export default defineComponent({
       axios.get("/business/admin/train/gen-seat/"+record.code).then((response)=>{
         loading.value=false;
         const data=response.data;
-        if(data.success){
+        if(data.code == 200){
           notification.success({description:"生成成功！"});
         }else {
-          notification.error({description:data.message});
+          notification.error({description:data.msg});
         }
       });
     };
