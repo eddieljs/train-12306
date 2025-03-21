@@ -108,6 +108,7 @@ export default defineComponent({
         };
       }
       loading.value = true;
+      console.log(params.value.trainCode)
       axios.get("/business/admin/trainSeat/query-list", {
         params: {
           page: param.page,

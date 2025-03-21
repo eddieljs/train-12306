@@ -53,6 +53,10 @@ public class TrainSeatService {
         TrainSeatExample trainSeatExample = new TrainSeatExample();
         trainSeatExample.setOrderByClause("id desc");
         TrainSeatExample.Criteria criteria = trainSeatExample.createCriteria();
+        // 检查 trainCodeValue 是否为空，如果不为空则添加查询条件
+        if (req.getTrainCode() != null && !req.getTrainCode().isEmpty()) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
 
         //设置分页参数
         PageHelper.startPage(req.getPage(), req.getSize());

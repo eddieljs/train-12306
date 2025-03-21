@@ -26,7 +26,6 @@ public class TrainSeatAdminController {
 
     @GetMapping("/query-list")
     public Result<PageResp<TrainSeatQueryResp>> queryList(@Valid TrainSeatQueryReq req) {
-
         PageResp<TrainSeatQueryResp> list = trainSeatService.queryList(req);
         return Result.success(list);
     }

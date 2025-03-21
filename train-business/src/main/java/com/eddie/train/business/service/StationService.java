@@ -1,6 +1,7 @@
 package com.eddie.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.eddie.train.business.domain.Station;
@@ -9,6 +10,8 @@ import com.eddie.train.business.mapper.StationMapper;
 import com.eddie.train.business.req.StationQueryReq;
 import com.eddie.train.business.resp.StationQueryResp;
 import com.eddie.train.common.context.LoginMemberContext;
+import com.eddie.train.common.exception.BusinessException;
+import com.eddie.train.common.exception.BusinessExceptionEnum;
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.util.SnowUtil;
 import com.eddie.train.business.req.StationQueryReq;
@@ -33,6 +36,13 @@ public class StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(req.getId())) {
+            StationExample stationExample = new StationExample();
+            stationExample.createCriteria().andNameEqualTo(req.getName());
+            List<Station> stationList = stationMapper.selectByExample(stationExample);
+            if (CollUtil.isNotEmpty(stationList)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_STATION_NAME_UNIQUE_ERROR);
+            }
+
             station.setId(SnowUtil.getSnowflakeNextId());
             station.setCreateTime(now);
             station.setUpdateTime(now);

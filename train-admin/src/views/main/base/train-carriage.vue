@@ -48,15 +48,15 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="座位数">
-        <a-input v-model:value="trainCarriage.seatCount" />
-      </a-form-item>
+<!--      <a-form-item label="座位数">-->
+<!--        <a-input v-model:value="trainCarriage.seatCount" />-->
+<!--      </a-form-item>-->
       <a-form-item label="排数">
         <a-input v-model:value="trainCarriage.rowCount" />
       </a-form-item>
-      <a-form-item label="列数">
-        <a-input v-model:value="trainCarriage.colCount" />
-      </a-form-item>
+<!--      <a-form-item label="列数">-->
+<!--        <a-input v-model:value="trainCarriage.colCount" />-->
+<!--      </a-form-item>-->
     </a-form>
   </a-modal>
 </template>
@@ -111,21 +111,13 @@ export default defineComponent({
       dataIndex: 'seatType',
       key: 'seatType',
     },
-    {
-      title: '座位数',
-      dataIndex: 'seatCount',
-      key: 'seatCount',
-    },
+
     {
       title: '排数',
       dataIndex: 'rowCount',
       key: 'rowCount',
     },
-    {
-      title: '列数',
-      dataIndex: 'colCount',
-      key: 'colCount',
-    },
+
     {
       title: '操作',
       dataIndex: 'operation'
