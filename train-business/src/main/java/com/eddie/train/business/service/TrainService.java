@@ -1,15 +1,17 @@
 package com.eddie.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
-import com.eddie.train.business.domain.Train;
-import com.eddie.train.business.domain.TrainExample;
+import com.eddie.train.business.domain.*;
 import com.eddie.train.business.mapper.TrainMapper;
 import com.eddie.train.business.req.TrainQueryReq;
 import com.eddie.train.business.req.TrainSaveReq;
 import com.eddie.train.business.resp.TrainQueryResp;
 import com.eddie.train.common.context.LoginMemberContext;
+import com.eddie.train.common.exception.BusinessException;
+import com.eddie.train.common.exception.BusinessExceptionEnum;
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.util.SnowUtil;
 
@@ -33,6 +35,10 @@ public class TrainService {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
         if (ObjectUtil.isNull(req.getId())) {
+            Train trainDB = SelectByUnique(req.getCode());
+            if (ObjectUtil.isNotEmpty(trainDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CODE_UNIQUE_ERROR);
+            }
             train.setId(SnowUtil.getSnowflakeNextId());
             train.setCreateTime(now);
             train.setUpdateTime(now);
@@ -41,6 +47,17 @@ public class TrainService {
             train.setUpdateTime(now);
             trainMapper.updateByPrimaryKeySelective(train);
         }
+    }
+
+    private Train SelectByUnique(String code) {
+        TrainExample trainExample = new TrainExample();
+        trainExample.createCriteria()
+                .andCodeEqualTo(code);
+        List<Train> stationList = trainMapper.selectByExample(trainExample);
+        if (CollUtil.isNotEmpty(stationList)) {
+            return stationList.get(0);
+        }
+        return null;
     }
 
     public PageResp<TrainQueryResp> queryList(TrainQueryReq req){
