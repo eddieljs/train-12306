@@ -3,6 +3,9 @@ package com.eddie.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.eddie.train.business.domain.TrainCarriage;
+import com.eddie.train.business.enums.SeatColEnum;
 import com.eddie.train.common.context.LoginMemberContext;
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.util.SnowUtil;
@@ -17,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +30,8 @@ public class TrainSeatService {
 
     @Resource
     private TrainSeatMapper trainSeatMapper;
+    @Resource
+    private TrainCarriageService trainCarriageService;
 
 
     public void save(TrainSeatSaveReq req) {
@@ -75,5 +81,50 @@ public class TrainSeatService {
 
         List<TrainSeat> list = trainSeatMapper.selectByExample(trainSeatExample);
         return BeanUtil.copyToList(list, TrainSeatQueryResp.class);
+    }
+
+    @Transactional
+    public void genTrainSeat(String trainCode) {
+        DateTime now = DateTime.now();
+        // 清空当前车次的座位
+        TrainSeatExample trainSeatExample = new TrainSeatExample();
+        TrainSeatExample.Criteria criteria = trainSeatExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        trainSeatMapper.deleteByExample(trainSeatExample);
+        // 查找当前车次的所有车厢
+        List<TrainCarriage> carriageList = trainCarriageService.selectByTrainCode(trainCode);
+        log.info("当前车次下的车厢数目：{}", carriageList.size());
+        // 循环生成每个车次的座位
+        for (TrainCarriage trainCarriage : carriageList) {
+            // 拿到车厢的行数、列数、座位类型
+            Integer rowCount = trainCarriage.getRowCount();
+            String seatType = trainCarriage.getSeatType();
+            int seatIndex = 1;
+            // 根据类型筛选所有的列
+            List<SeatColEnum> colEnumList = SeatColEnum.getColsByType(seatType);
+            log.info("根据类型筛选所有的列：{}", colEnumList);
+            // 循环行数
+            for (Integer row = 1; row <= rowCount; row++) {
+                // 循环列数
+                for (SeatColEnum seatColEnum : colEnumList) {
+                    // 构造座位数据并保存数据库
+                    TrainSeat trainSeat = new TrainSeat();
+                    trainSeat.setId(SnowUtil.getSnowflakeNextId());
+                    trainSeat.setTrainCode(trainCode);
+                    trainSeat.setCarriageIndex(trainCarriage.getIndex());
+                    //为行数填充0 保证所有行数都为两位数
+                    trainSeat.setRow(StrUtil.fillBefore(String.valueOf(row),'0', 2));
+                    trainSeat.setCol(seatColEnum.getCode());
+                    trainSeat.setSeatType(seatType);
+                    trainSeat.setCarriageSeatIndex(seatIndex++);
+                    trainSeat.setCreateTime(now);
+                    trainSeat.setUpdateTime(now);
+                    log.info("插入座位信息：{}", trainSeat);
+                    trainSeatMapper.insert(trainSeat);
+                }
+
+            }
+
+        }
     }
 }

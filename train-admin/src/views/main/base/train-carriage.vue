@@ -48,15 +48,15 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-<!--      <a-form-item label="座位数">-->
-<!--        <a-input v-model:value="trainCarriage.seatCount" />-->
-<!--      </a-form-item>-->
+      <a-form-item label="座位数">
+        <a-input v-model:value="trainCarriage.seatCount" />
+      </a-form-item>
       <a-form-item label="排数">
         <a-input v-model:value="trainCarriage.rowCount" />
       </a-form-item>
-<!--      <a-form-item label="列数">-->
-<!--        <a-input v-model:value="trainCarriage.colCount" />-->
-<!--      </a-form-item>-->
+      <a-form-item label="列数">
+        <a-input v-model:value="trainCarriage.colCount" />
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
@@ -168,7 +168,7 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -191,12 +191,12 @@ export default defineComponent({
         loading.value = false;
         let data = response.data;
         if (data.code == 200) {
-          trainCarriages.value = data.content.list;
+          trainCarriages.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
           pagination.value.total = data.content.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };

@@ -77,4 +77,15 @@ public class TrainService {
         List<Train> list = trainMapper.selectByExample(trainExample);
         return BeanUtil.copyToList(list, TrainQueryResp.class);
     }
+
+    public List<TrainQueryResp> queryAll(){
+        //设置查询条件
+        TrainExample trainExample = new TrainExample();
+        trainExample.setOrderByClause("code desc");
+        //进行条件查询
+        List<Train> trainList = trainMapper.selectByExample(trainExample);
+        //类型转换
+        List<TrainQueryResp> list = BeanUtil.copyToList(trainList, TrainQueryResp.class);
+        return list;
+    }
 }

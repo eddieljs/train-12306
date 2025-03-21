@@ -37,22 +37,30 @@ export default defineComponent({
      * 查询所有的车次，用于车次下拉框
      */
     const queryAllTrain = () => {
-      let list = SessionStorage.get(SESSION_ALL_TRAIN);
+      axios.get("/business/admin/train/query-all").then((response) => {
+        let data = response.data;
+        if (data.code == 200) {
+          trains.value = data.data;
+        } else {
+          notification.error({description: data.msg});
+        }
+      });
+      /*let list = SessionStorage.get(SESSION_ALL_TRAIN);
       if (Tool.isNotEmpty(list)) {
         console.log("queryAllTrain 读取缓存");
         trains.value = list;
       } else {
         axios.get("/business/admin/train/query-all").then((response) => {
           let data = response.data;
-          if (data.success) {
-            trains.value = data.content;
+          if (data.code == 200) {
+            trains.value = data.data;
             console.log("queryAllTrain 保存缓存");
             SessionStorage.set(SESSION_ALL_TRAIN, trains.value);
           } else {
-            notification.error({description: data.message});
+            notification.error({description: data.msg});
           }
         });
-      }
+      }*/
     };
 
     /**

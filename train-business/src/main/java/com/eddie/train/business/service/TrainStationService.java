@@ -3,13 +3,12 @@ package com.eddie.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
-import com.eddie.train.business.domain.Train;
-import com.eddie.train.business.domain.TrainExample;
-import com.eddie.train.business.domain.TrainStation;
-import com.eddie.train.business.domain.TrainStationExample;
+import com.eddie.train.business.domain.*;
+import com.eddie.train.business.mapper.StationMapper;
 import com.eddie.train.business.mapper.TrainStationMapper;
 import com.eddie.train.business.req.TrainStationQueryReq;
 import com.eddie.train.business.req.TrainStationSaveReq;
+import com.eddie.train.business.resp.StationQueryResp;
 import com.eddie.train.business.resp.TrainQueryResp;
 import com.eddie.train.business.resp.TrainStationQueryResp;
 import com.eddie.train.common.context.LoginMemberContext;
@@ -30,6 +29,9 @@ public class TrainStationService {
 
     @Resource
     private TrainStationMapper trainStationMapper;
+
+    @Resource
+    private StationMapper stationMapper;
 
 
     public void save(TrainStationSaveReq req) {
@@ -80,4 +82,6 @@ public class TrainStationService {
         List<TrainStation> list = trainStationMapper.selectByExample(trainStationExample);
         return BeanUtil.copyToList(list, TrainStationQueryResp.class);
     }
+
+
 }

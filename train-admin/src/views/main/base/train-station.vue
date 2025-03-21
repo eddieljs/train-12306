@@ -183,7 +183,7 @@ export default defineComponent({
             size: pagination.value.pageSize,
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -199,7 +199,7 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -222,12 +222,13 @@ export default defineComponent({
         loading.value = false;
         let data = response.data;
         if (data.code == 200) {
-          trainStations.value = data.content.list;
+          // notification.success({description: "123456"});
+          trainStations.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.data.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -239,6 +240,17 @@ export default defineComponent({
         page: page.current,
         size: page.pageSize
       });
+    };
+
+    const queryTrainCode = () => {
+      axios.get("/business/admin/train/query-all", ).then((response) => {
+        let data = response.data;
+        if(data.code == 200) {
+          console.log(data.data);
+        }else {
+          notification.error({description: data.msg});
+        }
+      })
     };
 
 

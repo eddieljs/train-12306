@@ -3,12 +3,15 @@ package com.eddie.train.business.controller.admin;
 import com.eddie.train.business.req.StationQueryReq;
 import com.eddie.train.business.req.StationSaveReq;
 import com.eddie.train.business.resp.StationQueryResp;
+import com.eddie.train.business.resp.TrainQueryResp;
 import com.eddie.train.business.service.StationService;
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.resp.Result;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/station")
@@ -33,5 +36,11 @@ public class AdminStationController {
     public Result login(@Valid @PathVariable Long id) {
         stationService.deleteById(id);
         return Result.success("信息删除成功!");
+    }
+
+    @GetMapping("/query-all")
+    public Result<List<StationQueryResp>> queryList() {
+        List<StationQueryResp> list = stationService.queryAll();
+        return Result.success(list);
     }
 }

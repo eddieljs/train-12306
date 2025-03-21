@@ -38,14 +38,17 @@ export default defineComponent({
      */
     const queryAllStation = () => {
       axios.get("/business/admin/station/query-all").then((response) => {
+        console.log(response)
         let data = response.data;
-        if (data.success) {
-          stations.value = data.content;
+        if (data.code == 200) {
+          console.log(data.data)
+          stations.value = data.data;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
-      });
+      })
     };
+
 
     /**
      * 车站下拉框筛选

@@ -68,4 +68,15 @@ public class StationService {
     public void deleteById(Long id) {
         stationMapper.deleteByPrimaryKey(id);
     }
+
+    public List<StationQueryResp> queryAll(){
+        //设置查询条件
+        StationExample stationExample = new StationExample();
+        stationExample.setOrderByClause("name desc");
+        //进行条件查询
+        List<Station> stationList = stationMapper.selectByExample(stationExample);
+        //类型转换
+        List<StationQueryResp> list = BeanUtil.copyToList(stationList, StationQueryResp.class);
+        return list;
+    }
 }

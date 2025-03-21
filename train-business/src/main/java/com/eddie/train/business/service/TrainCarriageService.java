@@ -3,10 +3,7 @@ package com.eddie.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
-import com.eddie.train.business.domain.TrainCarriage;
-import com.eddie.train.business.domain.TrainCarriageExample;
-import com.eddie.train.business.domain.TrainStation;
-import com.eddie.train.business.domain.TrainStationExample;
+import com.eddie.train.business.domain.*;
 import com.eddie.train.business.mapper.TrainCarriageMapper;
 import com.eddie.train.business.req.TrainCarriageQueryReq;
 import com.eddie.train.business.req.TrainCarriageSaveReq;
@@ -78,5 +75,14 @@ public class TrainCarriageService {
 
         List<TrainCarriage> list = trainCarriageMapper.selectByExample(trainCarriageExample);
         return BeanUtil.copyToList(list, TrainCarriageQueryResp.class);
+    }
+
+        public List<TrainCarriage> selectByTrainCode(String trainCode){
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.setOrderByClause("`index` desc");
+        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        List<TrainCarriage> trainCarriages = trainCarriageMapper.selectByExample(trainCarriageExample);
+        return trainCarriages;
     }
 }

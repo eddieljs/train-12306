@@ -1,5 +1,6 @@
 package com.eddie.train.business.controller.admin;
 
+import com.eddie.train.business.service.TrainSeatService;
 import com.eddie.train.common.context.LoginMemberContext;
 import com.eddie.train.common.resp.Result;
 import com.eddie.train.common.resp.PageResp;
@@ -17,6 +18,8 @@ import java.util.List;
 public class TrainAdminController {
     @Resource
     private TrainService trainService;
+    @Resource
+    private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
     public Result<Object> save(@Valid @RequestBody TrainSaveReq req) {
@@ -43,7 +46,17 @@ public class TrainAdminController {
         return Result.success(list);
     }
 
+    @GetMapping("/query-all")
+    public Result<List<TrainQueryResp>> queryList() {
+        List<TrainQueryResp> list = trainService.queryAll();
+        return Result.success(list);
+    }
 
+    @GetMapping("/gen-seat/{trainCode}")
+    public Result<Object> genSeat(@PathVariable String trainCode) {
+        trainSeatService.genTrainSeat(trainCode);
+        return Result.success("生成座位信息成功!");
+    }
 
 
 }
