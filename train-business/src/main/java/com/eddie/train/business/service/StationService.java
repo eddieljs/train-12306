@@ -36,10 +36,8 @@ public class StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(req.getId())) {
-            StationExample stationExample = new StationExample();
-            stationExample.createCriteria().andNameEqualTo(req.getName());
-            List<Station> stationList = stationMapper.selectByExample(stationExample);
-            if (CollUtil.isNotEmpty(stationList)) {
+            Station stationDB = SelectByUnique(req.getName());
+            if (ObjectUtil.isNotEmpty(stationDB)) {
                 throw new BusinessException(BusinessExceptionEnum.BUSINESS_STATION_NAME_UNIQUE_ERROR);
             }
 
@@ -51,6 +49,16 @@ public class StationService {
             station.setUpdateTime(now);
             stationMapper.updateByPrimaryKeySelective(station);
         }
+    }
+
+    private Station SelectByUnique(String name) {
+        StationExample stationExample = new StationExample();
+        stationExample.createCriteria().andNameEqualTo(name);
+        List<Station> stationList = stationMapper.selectByExample(stationExample);
+        if (CollUtil.isNotEmpty(stationList)) {
+            return stationList.get(0);
+        }
+        return null;
     }
 
     public PageResp<StationQueryResp> queryList(StationQueryReq req){
