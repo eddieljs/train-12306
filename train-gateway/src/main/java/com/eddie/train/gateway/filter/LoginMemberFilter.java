@@ -28,7 +28,9 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
                 || path.contains("/member/sendCode")
                 || path.contains("/member/passenger/save")
                 || path.contains("/business/kaptcha")
-                || path.contains("/business/hello")) {
+                || path.contains("/business/hello")
+                || path.contains("/batch/hello")
+        ) {
             LOG.info("不需要登录验证：{}", path);
             return chain.filter(exchange);
         } else {
