@@ -1,7 +1,8 @@
 <template>
   <p>
     <a-space>
-      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />      <train-select-view v-model="params.code" width="200px"></train-select-view>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select-view v-model="params.code" width="200px"></train-select-view>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
       <a-button type="primary" @click="onClickGenDaily">手动生成每日车次信息</a-button>
@@ -189,14 +190,14 @@ export default defineComponent({
     const onDelete = (record) => {
       axios.delete("/business/admin/dailyTrain/delete/" + record.id).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "删除成功！"});
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize,
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -204,7 +205,7 @@ export default defineComponent({
     const handleOk = () => {
       axios.post("/business/admin/dailyTrain/save", dailyTrain.value).then((response) => {
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "保存成功！"});
           visible.value = false;
           handleQuery({
@@ -212,7 +213,7 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -236,13 +237,13 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
-          dailyTrains.value = data.content.list;
+        if (data.code == 200) {
+          dailyTrains.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.data.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -257,12 +258,17 @@ export default defineComponent({
     };
 
     const onChangeCode = (train) => {
-      console.log("车次下拉组件选择：", train);
-      let t = Tool.copy(train);
-      delete t.id;
-      // 用assign可以合并
-      dailyTrain.value = Object.assign(dailyTrain.value, t);
+      try {
+        console.log("车次下拉组件选择：", train);
+        let t = Tool.copy(train);
+        delete t.id;
+        // 用assign可以合并
+        dailyTrain.value = Object.assign(dailyTrain.value, t);
+      } catch (error) {
+        console.error("onChangeCode 方法执行出错：", error);
+      }
     };
+
     const onClickGenDaily = () => {
       genDailyVisible.value = true;
     };
@@ -273,7 +279,7 @@ export default defineComponent({
       axios.get("/business/admin/dailyTrain/gen-daily/" + date).then((response) => {
         genDailyLoading.value = false;
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "生成成功！"});
           genDailyVisible.value = false;
           handleQuery({
@@ -281,7 +287,7 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };

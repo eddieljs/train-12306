@@ -90,7 +90,9 @@ public class TrainStationService {
         TrainStationExample trainStationExample = new TrainStationExample();
         trainStationExample.setOrderByClause("id desc");
         TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
-
+        if (ObjectUtil.isNotNull(req.getTrainCode())){
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
         //设置分页参数
         PageHelper.startPage(req.getPage(), req.getSize());
         //进行条件查询

@@ -134,10 +134,10 @@ export default defineComponent({
       axios.get('/batch/admin/job/query').then((response) => {
         loading.value = false;
         const data = response.data;
-        if (data.success) {
-          jobs.value = data.content;
+        if (data.code == 200) {
+          jobs.value = data.data;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -156,12 +156,12 @@ export default defineComponent({
       axios.post('/batch/admin/job/' + url, job.value).then((response) => {
         modalLoading.value = false;
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           modalVisible.value = false;
           notification.success({description: "保存成功！"});
           handleQuery();
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -193,11 +193,11 @@ export default defineComponent({
         group: record.group
       }).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "删除成功！"});
           handleQuery();
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -211,11 +211,11 @@ export default defineComponent({
         group: record.group
       }).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "暂停成功！"});
           handleQuery();
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -227,12 +227,12 @@ export default defineComponent({
       axios.post('/batch/admin/job/reschedule', record).then((response) => {
         modalLoading.value = false;
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           modalVisible.value = false;
           notification.success({description: "重启成功！"});
           handleQuery();
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -243,10 +243,10 @@ export default defineComponent({
     const handleRun = (record) => {
       axios.post('/batch/admin/job/run', record).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "手动执行成功！"});
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
