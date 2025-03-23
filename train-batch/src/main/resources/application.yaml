@@ -10,6 +10,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     time-zone: Asia/Shanghai
+  application:
+    name: batch
 mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
 logging:

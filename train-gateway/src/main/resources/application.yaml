@@ -32,3 +32,5 @@ spring:
             maxAge: 3600
   jackson:
     time-zone: Asia/Shanghai
+  application:
+    name: gateway
