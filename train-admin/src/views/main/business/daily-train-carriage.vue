@@ -163,32 +163,41 @@ export default defineComponent({
     const onDelete = (record) => {
       axios.delete("/business/admin/dailyTrainCarriage/delete/" + record.id).then((response) => {
         const data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           notification.success({description: "删除成功！"});
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize,
           });
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
 
     const handleOk = () => {
-      axios.post("/business/admin/dailyTrainCarriage/save", dailyTrainCarriage.value).then((response) => {
-        let data = response.data;
-        if (data.success) {
-          notification.success({description: "保存成功！"});
-          visible.value = false;
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
+      axios.post("/business/admin/dailyTrainCarriage/save", dailyTrainCarriage.value)
+          .then((response) => {
+            let data = response.data;
+            console.log("响应数据:", data); // 调试日志
+            if (data.code === 200) {
+              notification.success({ description: "保存成功！" });
+              visible.value = false;
+              handleQuery({
+                page: pagination.value.current,
+                size: pagination.value.pageSize
+              });
+            } else {
+              console.log("错误信息:", data.msg);
+              notification.error({description: data.msg || "未知错误" });
+            }
+          })
+          .catch((error) => {
+            console.error("请求异常:", error);
+            notification.error({
+              description: error.response?.data?.msg || error.message
+            });
           });
-        } else {
-          notification.error({description: data.message});
-        }
-      });
     };
 
     const handleQuery = (param) => {
@@ -209,13 +218,13 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
-          dailyTrainCarriages.value = data.content.list;
+        if (data.code == 200) {
+          dailyTrainCarriages.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.data.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
