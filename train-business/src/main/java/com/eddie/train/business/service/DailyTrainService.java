@@ -45,7 +45,7 @@ public class DailyTrainService {
     public PageResp<DailyTrainQueryResp> queryList(DailyTrainQueryReq req){
         //设置查询条件
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
-        dailyTrainExample.setOrderByClause("date desc, train_code asc, `index` asc");
+        dailyTrainExample.setOrderByClause("date desc, code asc");
         DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
         if (ObjectUtil.isNotEmpty(req.getCode())){
             criteria.andCodeEqualTo(req.getCode());
