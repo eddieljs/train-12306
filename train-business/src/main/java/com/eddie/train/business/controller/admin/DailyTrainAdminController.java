@@ -8,8 +8,10 @@ import com.eddie.train.business.resp.DailyTrainQueryResp;
 import com.eddie.train.business.service.DailyTrainService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -41,6 +43,14 @@ public class DailyTrainAdminController {
     public Result<List<DailyTrainQueryResp>> queryMine() {
         List<DailyTrainQueryResp> list = dailyTrainService.queryMine();
         return Result.success(list);
+    }
+
+    @GetMapping("/gen-daily/{date}")
+    public Result genDaily(@PathVariable
+                                @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                Date date) {
+        dailyTrainService.genDaily(date);
+        return Result.success("生成每日车次信息成功!");
     }
 
 

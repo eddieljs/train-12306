@@ -31,6 +31,7 @@ public class TrainService {
     private TrainMapper trainMapper;
 
 
+
     public void save(TrainSaveReq req) {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
@@ -96,13 +97,16 @@ public class TrainService {
     }
 
     public List<TrainQueryResp> queryAll(){
+        List<Train> list = selectAll();
+        return BeanUtil.copyToList(list, TrainQueryResp.class);
+    }
+
+    public List<Train> selectAll() {
         //设置查询条件
         TrainExample trainExample = new TrainExample();
         trainExample.setOrderByClause("code desc");
         //进行条件查询
         List<Train> trainList = trainMapper.selectByExample(trainExample);
-        //类型转换
-        List<TrainQueryResp> list = BeanUtil.copyToList(trainList, TrainQueryResp.class);
-        return list;
+        return trainList;
     }
 }
