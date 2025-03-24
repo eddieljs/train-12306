@@ -122,5 +122,13 @@ public class TrainStationService {
         return BeanUtil.copyToList(list, TrainStationQueryResp.class);
     }
 
+    public List<TrainStation> SelectByTrainCode(String trainCode) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.setOrderByClause("`index` asc");
+        trainStationExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode);
+        List<TrainStation> stationList = trainStationMapper.selectByExample(trainStationExample);
+        return stationList;
+    }
 
 }

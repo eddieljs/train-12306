@@ -3,6 +3,7 @@ package com.eddie.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.eddie.train.business.domain.Train;
 import com.eddie.train.business.resp.TrainQueryResp;
@@ -33,6 +34,8 @@ public class DailyTrainService {
     private DailyTrainMapper dailyTrainMapper;
     @Resource
     private TrainService trainService;
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
 
 
     public void save(DailyTrainSaveReq req) {
@@ -104,6 +107,7 @@ public class DailyTrainService {
         }
     }
     public void genDailyTrain(Date date, Train train) {
+        log.info("开始生成【{}】车次【{}】的信息", DateUtil.formatDate(date),train.getCode());
         Date now = DateTime.now();
         // 删除原有数据
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
@@ -118,5 +122,9 @@ public class DailyTrainService {
         dailyTrain.setUpdateTime(now);
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
+        //生成该车次的车站信息
+        dailyTrainStationService.genDaily(date, train.getCode());
+        log.info("结束生成【{}】车次【{}】的信息",DateUtil.formatDate(date),train.getCode());
+
     }
 }
