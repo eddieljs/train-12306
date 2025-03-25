@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.eddie.train.business.domain.TrainCarriage;
+import com.eddie.train.business.domain.TrainCarriageExample;
 import com.eddie.train.business.enums.SeatColEnum;
 import com.eddie.train.common.context.LoginMemberContext;
 import com.eddie.train.common.resp.PageResp;
@@ -130,5 +131,14 @@ public class TrainSeatService {
             }
 
         }
+    }
+
+    public List<TrainSeat> selectByTrainCode(String trainCode) {
+        TrainSeatExample trainSeatExample = new TrainSeatExample();
+        trainSeatExample.setOrderByClause("`carriage_index` desc");
+        TrainSeatExample.Criteria criteria = trainSeatExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        List<TrainSeat> trainSeats = trainSeatMapper.selectByExample(trainSeatExample);
+        return trainSeats;
     }
 }

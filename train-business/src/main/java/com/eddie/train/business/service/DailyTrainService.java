@@ -38,6 +38,8 @@ public class DailyTrainService {
     private DailyTrainStationService dailyTrainStationService;
     @Resource
     private DailyTrainCarriageService dailyTrainCarriageService;
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
 
     public void save(DailyTrainSaveReq req) {
@@ -128,6 +130,8 @@ public class DailyTrainService {
         dailyTrainStationService.genDaily(date, train.getCode());
         //生成车厢信息
         dailyTrainCarriageService.genDaily(date, train.getCode());
+        //生成座位信息
+        dailyTrainSeatService.genDaily(date, train.getCode());
         log.info("结束生成【{}】车次【{}】的信息",DateUtil.formatDate(date),train.getCode());
 
     }

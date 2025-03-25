@@ -105,7 +105,7 @@ public class TrainCarriageService {
         return BeanUtil.copyToList(list, TrainCarriageQueryResp.class);
     }
 
-        public List<TrainCarriage> selectByTrainCode(String trainCode){
+    public List<TrainCarriage> selectByTrainCode(String trainCode){
         TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
         trainCarriageExample.setOrderByClause("`index` desc");
         TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
