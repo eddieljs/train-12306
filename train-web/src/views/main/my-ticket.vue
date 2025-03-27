@@ -2,10 +2,10 @@
   <p>
     <a-space>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
-      
+
     </a-space>
   </p>
-  <a-table :dataSource="confirmOrders"
+  <a-table :dataSource="tickets"
            :columns="columns"
            :pagination="pagination"
            @change="handleTableChange"
@@ -13,9 +13,16 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
       </template>
-      <template v-else-if="column.dataIndex === 'status'">
-        <span v-for="item in CONFIRM_ORDER_STATUS_ARRAY" :key="item.code">
-          <span v-if="item.code === record.status">
+      <template v-else-if="column.dataIndex === 'col'">
+        <span v-for="item in SEAT_COL_ARRAY" :key="item.code">
+          <span v-if="item.code === record.col && item.type === record.seatType">
+            {{item.desc}}
+          </span>
+        </span>
+      </template>
+      <template v-else-if="column.dataIndex === 'seatType'">
+        <span v-for="item in SEAT_TYPE_ARRAY" :key="item.code">
+          <span v-if="item.code === record.seatType">
             {{item.desc}}
           </span>
         </span>
@@ -30,24 +37,30 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 
 export default defineComponent({
-  name: "confirm-order-view",
+  name: "ticket-view",
   setup() {
-    const CONFIRM_ORDER_STATUS_ARRAY = window.CONFIRM_ORDER_STATUS_ARRAY;
+    const SEAT_COL_ARRAY = window.SEAT_COL_ARRAY;
+    const SEAT_TYPE_ARRAY = window.SEAT_TYPE_ARRAY;
     const visible = ref(false);
-    let confirmOrder = ref({
+    let ticket = ref({
       id: undefined,
       memberId: undefined,
+      passengerId: undefined,
+      passengerName: undefined,
       date: undefined,
       trainCode: undefined,
+      carriageIndex: undefined,
+      row: undefined,
+      col: undefined,
       start: undefined,
+      startTime: undefined,
       end: undefined,
-      dailyTrainTicketId: undefined,
-      tickets: undefined,
-      status: undefined,
+      endTime: undefined,
+      seatType: undefined,
       createTime: undefined,
       updateTime: undefined,
     });
-    const confirmOrders = ref([]);
+    const tickets = ref([]);
     // 分页的三个属性名是固定的
     const pagination = ref({
       total: 0,
@@ -57,14 +70,14 @@ export default defineComponent({
     let loading = ref(false);
     const columns = [
     {
-      title: '会员id',
-      dataIndex: 'memberId',
-      key: 'memberId',
+      title: '乘客姓名',
+      dataIndex: 'passengerName',
+      key: 'passengerName',
     },
     {
       title: '日期',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'trainDate',
+      key: 'trainDate',
     },
     {
       title: '车次编号',
@@ -72,29 +85,49 @@ export default defineComponent({
       key: 'trainCode',
     },
     {
+      title: '箱序',
+      dataIndex: 'carriageIndex',
+      key: 'carriageIndex',
+    },
+    {
+      title: '排号',
+      dataIndex: 'seatRow',
+      key: 'seatRow',
+    },
+    {
+      title: '列号',
+      dataIndex: 'seatCol',
+      key: 'seatCol',
+    },
+    {
       title: '出发站',
-      dataIndex: 'start',
-      key: 'start',
+      dataIndex: 'startStation',
+      key: 'startStation',
+    },
+    {
+      title: '出发时间',
+      dataIndex: 'startTime',
+      key: 'startTime',
     },
     {
       title: '到达站',
-      dataIndex: 'end',
-      key: 'end',
+      dataIndex: 'endStation',
+      key: 'endStation',
     },
     {
-      title: '余票ID',
-      dataIndex: 'dailyTrainTicketId',
-      key: 'dailyTrainTicketId',
+      title: '到站时间',
+      dataIndex: 'endTime',
+      key: 'endTime',
     },
     {
-      title: '车票',
-      dataIndex: 'tickets',
-      key: 'tickets',
+      title: '座位类型',
+      dataIndex: 'seatType',
+      key: 'seatType',
     },
     {
-      title: '订单状态',
-      dataIndex: 'status',
-      key: 'status',
+      title: '出票时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
     },
     ];
 
@@ -107,7 +140,7 @@ export default defineComponent({
         };
       }
       loading.value = true;
-      axios.get("/business/admin/confirmOrder/query-list", {
+      axios.get("/member/ticket/query-list", {
         params: {
           page: param.page,
           size: param.size
@@ -115,13 +148,13 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
-          confirmOrders.value = data.content.list;
+        if (data.code == 200) {
+          tickets.value = data.dara.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
           pagination.value.total = data.content.total;
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -143,10 +176,11 @@ export default defineComponent({
     });
 
     return {
-      CONFIRM_ORDER_STATUS_ARRAY,
-      confirmOrder,
+      SEAT_COL_ARRAY,
+      SEAT_TYPE_ARRAY,
+      ticket,
       visible,
-      confirmOrders,
+      tickets,
       pagination,
       columns,
       handleTableChange,

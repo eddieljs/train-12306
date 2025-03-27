@@ -3,6 +3,7 @@ GET http://localhost:8082/business/hello
 Accept: application/json
 ###
 
-GET http://localhost:8080/business/hello
+GET http://localhost:8080/business/station/query-all
+token: {{token}}
 Accept: application/json
 

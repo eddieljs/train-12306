@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.eddie.train.business.domain.*;
 import com.eddie.train.business.enums.SeatTypeEnum;
@@ -59,6 +60,18 @@ public class DailyTrainTicketService {
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
         dailyTrainTicketExample.setOrderByClause("id desc");
         DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
+        if(ObjectUtil.isNotNull(req.getDate())){
+            criteria.andDateEqualTo(req.getDate());
+        }
+        if (ObjUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
+        if (ObjUtil.isNotEmpty(req.getStart())) {
+            criteria.andStartEqualTo(req.getStart());
+        }
+        if (ObjUtil.isNotEmpty(req.getEnd())) {
+            criteria.andEndEqualTo(req.getEnd());
+        }
 
         //设置分页参数
         PageHelper.startPage(req.getPage(), req.getSize());
