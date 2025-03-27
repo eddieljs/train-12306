@@ -19,6 +19,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -92,6 +93,7 @@ public class DailyTrainCarriageService {
         return BeanUtil.copyToList(list, DailyTrainCarriageQueryResp.class);
     }
 
+    @Transactional
     public void genDaily(Date date, String trainCode){
         log.info("开始生成【{}】车次【{}】的车厢信息", DateUtil.formatDate(date),trainCode);
 
