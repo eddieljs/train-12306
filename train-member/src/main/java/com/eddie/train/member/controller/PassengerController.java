@@ -12,6 +12,8 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/passenger")
 public class PassengerController {
@@ -35,5 +37,11 @@ public class PassengerController {
     public Result login(@Valid @PathVariable Long id) {
         passengerService.deleteById(id);
         return Result.success("信息删除成功!");
+    }
+
+    @GetMapping("query-mine")
+    public Result<List<PassengerQueryResp>> queryMine(){
+        List<PassengerQueryResp> passengerQueryResp = passengerService.queryMine();
+        return Result.success(passengerQueryResp);
     }
 }

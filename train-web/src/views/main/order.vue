@@ -80,6 +80,8 @@
         </a-col>
       </a-row>
       <br/>
+      选作对象：{{chooseSeatObj}}
+      <br/>
       <div v-if="chooseSeatType === 0" style="color: red;">
         您购买的车票不支持选座
         <div>12306规则：只有全部是一等座或全部是二等座才支持选座</div>
@@ -250,14 +252,14 @@ export default defineComponent({
     const handleQueryPassenger = () => {
       axios.get("/member/passenger/query-mine").then((response) => {
         let data = response.data;
-        if (data.success) {
-          passengers.value = data.content;
+        if (data.code == 200) {
+          passengers.value = data.data;
           passengers.value.forEach((item) => passengerOptions.value.push({
             label: item.name,
             value: item
           }))
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };
@@ -382,15 +384,15 @@ export default defineComponent({
         lineNumber: lineNumber.value
       }).then((response) => {
         let data = response.data;
-        if (data.success) {
+        if (data.code == 200) {
           // notification.success({description: "下单成功！"});
           visible.value = false;
           imageCodeModalVisible.value = false;
           lineModalVisible.value = true;
-          confirmOrderId.value = data.content;
+          confirmOrderId.value = data.data;
           queryLineCount();
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     }
@@ -405,8 +407,8 @@ export default defineComponent({
       queryLineCountInterval = setInterval(function () {
         axios.get("/business/confirmOrder/query-line-count/" + confirmOrderId.value).then((response) => {
           let data = response.data;
-          if (data.success) {
-            let result = data.content;
+          if (data.code == 200) {
+            let result = data.data;
             switch (result) {
               case -1 :
                 notification.success({description: "购票成功！"});
@@ -427,7 +429,7 @@ export default defineComponent({
                 confirmOrderLineCount.value = result;
             }
           } else {
-            notification.error({description: data.message});
+            notification.error({description: data.msg});
           }
         });
       }, 500);
@@ -493,8 +495,8 @@ export default defineComponent({
     const onCancelOrder = () => {
       axios.get("/business/confirmOrder/cancel/" + confirmOrderId.value).then((response) => {
         let data = response.data;
-        if (data.success) {
-          let result = data.content;
+        if (data.code == 200) {
+          let result = data.data;
           if (result === 1) {
             notification.success({description: "取消成功！"});
             // 取消成功时，不用再轮询排队结果
@@ -504,7 +506,7 @@ export default defineComponent({
             notification.error({description: "取消失败！"});
           }
         } else {
-          notification.error({description: data.message});
+          notification.error({description: data.msg});
         }
       });
     };

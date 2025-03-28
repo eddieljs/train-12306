@@ -115,11 +115,11 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         let data = response.data;
-        if (data.success) {
-          confirmOrders.value = data.content.list;
+        if (data.code == 200) {
+          confirmOrders.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.data.total;
         } else {
           notification.error({description: data.message});
         }
