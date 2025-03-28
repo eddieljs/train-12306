@@ -2,11 +2,16 @@ package com.eddie.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
+import com.eddie.train.business.domain.DailyTrainTicket;
 import com.eddie.train.business.enums.ConfirmOrderStatusEnum;
+import com.eddie.train.business.enums.SeatTypeEnum;
 import com.eddie.train.business.req.ConfirmOrderTicketReq;
 import com.eddie.train.common.context.LoginMemberContext;
+import com.eddie.train.common.exception.BusinessException;
+import com.eddie.train.common.exception.BusinessExceptionEnum;
 import com.eddie.train.common.resp.PageResp;
 import com.eddie.train.common.util.SnowUtil;
 import com.eddie.train.business.domain.ConfirmOrder;
@@ -21,6 +26,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -29,6 +35,8 @@ public class ConfirmOrderService {
 
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
+    @Resource
+    private DailyTrainTicketService dailyTrainTicketService;
 
 
     public void save(ConfirmOrderDoReq req) {
@@ -90,21 +98,58 @@ public class ConfirmOrderService {
         confirmOrder.setCreateTime(now);
         confirmOrder.setUpdateTime(now);
         confirmOrder.setMemberId(LoginMemberContext.getId());
-        confirmOrder.setDate(req.getDate());
-        confirmOrder.setTrainCode(req.getTrainCode());
-        confirmOrder.setStart(req.getStart());
-        confirmOrder.setEnd(req.getEnd());
+        Date date = req.getDate();
+        String trainCode = req.getTrainCode();
+        String start = req.getStart();
+        String end = req.getEnd();
+        confirmOrder.setDate(date);
+        confirmOrder.setTrainCode(trainCode);
+        confirmOrder.setStart(start);
+        confirmOrder.setEnd(end);
         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setTickets(JSON.toJSONString(req.getTickets()));
 
         confirmOrderMapper.insert(confirmOrder);
 
-
         // 查出余票记录，需要得到真实的库存
-
+        DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.SelectByUnique(date, trainCode, start, end);
+        log.info("查到余票记录：{}", dailyTrainTicket);
         // 扣减余票数量，并判断余票是否足够
-
+        for (ConfirmOrderTicketReq ticketReq : req.getTickets()) {
+            String seatTypeCode = ticketReq.getSeatTypeCode();
+            SeatTypeEnum seatTypeEnum = EnumUtil.getBy(SeatTypeEnum::getCode, seatTypeCode);
+            switch (seatTypeEnum) {
+                case YDZ -> {
+                    int remainingTicketCount = dailyTrainTicket.getYdz() - 1;
+                    if (remainingTicketCount < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(remainingTicketCount);
+                }
+                case EDZ -> {
+                    int remainingTicketCount = dailyTrainTicket.getEdz() - 1;
+                    if (remainingTicketCount < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(remainingTicketCount);
+                }
+                case RW -> {
+                    int remainingTicketCount = dailyTrainTicket.getRw() - 1;
+                    if (remainingTicketCount < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(remainingTicketCount);
+                }
+                case YW -> {
+                    int remainingTicketCount = dailyTrainTicket.getYw() - 1;
+                    if (remainingTicketCount < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(remainingTicketCount);
+                }
+            }
+        }
         // 选座
 
             // 一个车箱一个车箱的获取座位数据
