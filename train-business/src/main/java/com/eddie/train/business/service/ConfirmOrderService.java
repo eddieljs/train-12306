@@ -4,9 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.eddie.train.business.domain.DailyTrainTicket;
 import com.eddie.train.business.enums.ConfirmOrderStatusEnum;
+import com.eddie.train.business.enums.SeatColEnum;
 import com.eddie.train.business.enums.SeatTypeEnum;
 import com.eddie.train.business.req.ConfirmOrderTicketReq;
 import com.eddie.train.common.context.LoginMemberContext;
@@ -22,10 +24,12 @@ import com.eddie.train.business.req.ConfirmOrderDoReq;
 import com.eddie.train.business.resp.ConfirmOrderQueryResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -108,7 +112,8 @@ public class ConfirmOrderService {
         confirmOrder.setEnd(end);
         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
-        confirmOrder.setTickets(JSON.toJSONString(req.getTickets()));
+        List<ConfirmOrderTicketReq> tickets = req.getTickets();
+        confirmOrder.setTickets(JSON.toJSONString(tickets));
 
         confirmOrderMapper.insert(confirmOrder);
 
@@ -116,7 +121,7 @@ public class ConfirmOrderService {
         DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.SelectByUnique(date, trainCode, start, end);
         log.info("查到余票记录：{}", dailyTrainTicket);
         // 扣减余票数量，并判断余票是否足够
-        for (ConfirmOrderTicketReq ticketReq : req.getTickets()) {
+        for (ConfirmOrderTicketReq ticketReq : tickets) {
             String seatTypeCode = ticketReq.getSeatTypeCode();
             SeatTypeEnum seatTypeEnum = EnumUtil.getBy(SeatTypeEnum::getCode, seatTypeCode);
             switch (seatTypeEnum) {
@@ -151,8 +156,39 @@ public class ConfirmOrderService {
             }
         }
         // 选座
+        ConfirmOrderTicketReq ticketReq0 = tickets.get(0);
+        if (StrUtil.isNotBlank(ticketReq0.getSeat())) {
+            log.info("本次购票有选座");
+            // 查出本次选座的座位类型都有哪些列，用于计算所选座位与第一个座位的偏离值
+            List<SeatColEnum> colsEnumList = SeatColEnum.getColsByType(ticketReq0.getSeatTypeCode());
+            log.info("本次选座的座位类型：{}", colsEnumList);
+            // 组成和前端一样的列表，用于做参照的座位列表
+            List<String> referSeatList = new ArrayList<>();
+            for (int i = 1; i <= 2; i++) {
+                for (SeatColEnum seatColEnum : colsEnumList) {
+                    referSeatList.add(seatColEnum.getType() + i);
+                }
+            }
+            log.info("用于做参照的两排座位：{}", referSeatList);
+            // 获取绝对偏移值
+            List<Integer> absoluteOffsetList = new ArrayList<>();
+            List<Integer> offsetList = new ArrayList<>();
+            for (ConfirmOrderTicketReq ticketReq : tickets) {
+                int index = referSeatList.indexOf(ticketReq.getSeat());
+                absoluteOffsetList.add(index);
+            }
+            log.info("计算得到的所有绝对偏移值为:{}", absoluteOffsetList);
+            // 计算相对偏移值
+            for (Integer index : absoluteOffsetList) {
+                int offset = index - absoluteOffsetList.get(0);
+                offsetList.add(offset);
+            }
+            log.info("计算得到的所有绝对偏移值为:{}", offsetList);
+        }else {
+            log.info("本次购票没有选座");
 
-            // 一个车箱一个车箱的获取座位数据
+        }
+        // 一个车箱一个车箱的获取座位数据
 
             // 挑选符合条件的座位，如果这个车箱不满足，则进入下个车箱(多个选座应该在同一个车厢)
 
