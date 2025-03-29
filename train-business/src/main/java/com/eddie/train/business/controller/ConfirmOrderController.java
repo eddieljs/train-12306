@@ -24,6 +24,12 @@ public class ConfirmOrderController {
         return Result.success("新增成功！");
     }
 
+    @GetMapping("/query-line-count/{id}")
+    public Result<Integer> queryLineCount(@PathVariable Long id) {
+        Integer count = confirmOrderService.queryLineCount(id);
+        return  Result.success(count);
+    }
+
 
 
 
