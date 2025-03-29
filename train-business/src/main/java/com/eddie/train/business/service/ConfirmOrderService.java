@@ -313,6 +313,7 @@ public class ConfirmOrderService {
 
                 // 保存选好的座位
                 finalSeatList.addAll(getSeatList);
+                log.info("最终选座:{}",finalSeatList);
                 return;
             }
         }
