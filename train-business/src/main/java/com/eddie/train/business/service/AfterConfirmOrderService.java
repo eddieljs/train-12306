@@ -3,10 +3,15 @@ import com.eddie.train.business.domain.ConfirmOrder;
 import com.eddie.train.business.domain.DailyTrainSeat;
 import com.eddie.train.business.domain.DailyTrainTicket;
 import com.eddie.train.business.enums.ConfirmOrderStatusEnum;
+import com.eddie.train.business.feign.MemberFeign;
 import com.eddie.train.business.mapper.ConfirmOrderMapper;
 import com.eddie.train.business.mapper.DailyTrainSeatMapper;
 import com.eddie.train.business.mapper.cust.DailyTrainTicketMapperCust;
+import com.eddie.train.business.req.ConfirmOrderDoReq;
 import com.eddie.train.business.req.ConfirmOrderTicketReq;
+import com.eddie.train.common.context.LoginMemberContext;
+import com.eddie.train.common.req.MemberTicketReq;
+import com.eddie.train.common.resp.Result;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -27,6 +32,10 @@ public class AfterConfirmOrderService{
     private DailyTrainSeatMapper dailyTrainSeatMapper;
     @Resource
     private DailyTrainTicketMapperCust dailyTrainTicketMapperCust;
+    @Resource
+    private MemberFeign memberFeign;
+    @Resource
+    private ConfirmOrderMapper confirmOrderMapper;
     /**
      *座位表修改售卖情况sell;
      *余票详情表修改余票;
@@ -34,8 +43,10 @@ public class AfterConfirmOrderService{
      *更新确认订单为成功
      */
     @Transactional
-   public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> finalSeatList) {
-        for (DailyTrainSeat dailyTrainSeat : finalSeatList) {
+   public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> finalSeatList,
+                              List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) {
+        for (int j = 0; j < finalSeatList.size(); j++) {
+            DailyTrainSeat dailyTrainSeat = finalSeatList.get(j);
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
             seatForUpdate.setId(dailyTrainSeat.getId());
             seatForUpdate.setSell(dailyTrainSeat.getSell());
@@ -89,9 +100,9 @@ public class AfterConfirmOrderService{
                     minEndIndex,
                     maxEndIndex);
 
-            /*// 调用会员服务接口，为会员增加一张车票
+            // 调用会员服务接口，为会员增加一张车票
             MemberTicketReq memberTicketReq = new MemberTicketReq();
-            memberTicketReq.setMemberId(confirmOrder.getMemberId());
+            memberTicketReq.setMemberId(LoginMemberContext.getId());
             memberTicketReq.setPassengerId(tickets.get(j).getPassengerId());
             memberTicketReq.setPassengerName(tickets.get(j).getPassengerName());
             memberTicketReq.setTrainDate(dailyTrainTicket.getDate());
@@ -104,15 +115,15 @@ public class AfterConfirmOrderService{
             memberTicketReq.setEndStation(dailyTrainTicket.getEnd());
             memberTicketReq.setEndTime(dailyTrainTicket.getEndTime());
             memberTicketReq.setSeatType(dailyTrainSeat.getSeatType());
-            CommonResp<Object> commonResp = memberFeign.save(memberTicketReq);
-            LOG.info("调用member接口，返回：{}", commonResp);
+            Result<Object> commonResp = memberFeign.save(memberTicketReq);
+            log.info("调用member接口，返回：{}", commonResp);
 
             // 更新订单状态为成功
             ConfirmOrder confirmOrderForUpdate = new ConfirmOrder();
             confirmOrderForUpdate.setId(confirmOrder.getId());
             confirmOrderForUpdate.setUpdateTime(new Date());
             confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
-            confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);*/
+            confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
         }
    }
 
