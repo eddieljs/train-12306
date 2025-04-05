@@ -1,5 +1,3 @@
 spring:
   jackson:
     time-zone: Asia/Shanghai
-  application:
-    name: common

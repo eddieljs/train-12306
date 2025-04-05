@@ -25,6 +25,7 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
                 || path.contains("/redis")
                 || path.contains("/test")
                 || path.contains("/member/login")
+                || path.contains("/member/hello")
                 || path.contains("/member/send-code")
                 || path.contains("/member/sendCode")
                 || path.contains("/member/passenger/save")

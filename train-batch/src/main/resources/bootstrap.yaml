@@ -1,0 +1,9 @@
+# 注册中心的名字
+spring:
+  application:
+    name: batch
+  cloud:
+    nacos:
+      config:
+      discovery:
+        server-addr: 172.23.188.192
